@@ -53,10 +53,23 @@ pipeline {
         }
 
         stage('Deploy') {
+            environment {
+                // Use the credential directly in the URL
+                GIT_URL = "https://${GITHUB_TOKEN}@github.com/rajeshrj-git/invoice-generator.git"
+            }
             steps {
-                sh 'npm run deploy'
-                echo "Deployed Successfully ✅"
-                echo "Your app is live at: https://rajeshrj-git.github.io/invoice-generator"
+                script {
+                    // Configure git auth
+                    sh '''
+                        git config user.email "deploy@invoice-generator.ci"
+                        git config user.name "Jenkins Deploy Bot"
+                        git remote set-url origin ${GIT_URL}
+                    '''
+                    
+                    // Deploy with forced authentication
+                    sh 'git push origin --delete gh-pages || true'  // Clean old deployment
+                    sh 'npx gh-pages --dist build --repo ${GIT_URL}'
+                }
             }
         }
     }
