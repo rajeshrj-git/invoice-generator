@@ -3,7 +3,6 @@ pipeline{
 
     environment{
         NODE_ENV ='production'
-        NODE_OPTIONS = '--openssl-legacy-provider'
     }
     options{
         timestamps()
@@ -27,8 +26,8 @@ pipeline{
         stage("Build"){
             steps{
                 echo "🔨 Building React app..."
-                sh 'npm run build'
-                echo "Buid Successfull ✅"
+                sh 'NODE_OPTIONS=--openssl-legacy-provider npm run build'
+                echo "Build Successful ✅"
             }
         }
         stage('Test'){
