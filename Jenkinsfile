@@ -25,7 +25,8 @@ pipeline{
         }
         stage("Build"){
             steps{
-                sh 'npm run  build'
+                echo "🔨 Building React app..."
+                sh 'export NODE_OPTIONS=--openssl-legacy-provider && npm run build'
                 echo "Buid Successfull ✅"
             }
         }
