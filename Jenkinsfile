@@ -52,29 +52,30 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('🚀 Deploy') {
             environment {
-                // Use this exact format for token authentication
-                AUTH_URL = "https://x-access-token:${GITHUB_TOKEN}@github.com/rajeshrj-git/invoice-generator.git"
+                // This format ALWAYS works for GitHub PAT auth
+                GIT_REPO_URL = "https://${GITHUB_TOKEN}@github.com/rajeshrj-git/invoice-generator.git"
             }
             steps {
                 script {
-                    // 1. Configure Git (critical for gh-pages commits)
+                    // 1. Configure Git identity (MANDATORY)
                     sh '''
-                        git config user.email "deploy@invoice-generator.ci"
-                        git config user.name "Jenkins Deploy Bot"
+                        git config --global user.email "deploy@invoice-generator.ci"
+                        git config --global user.name "Jenkins Deploy Bot"
                     '''
                     
-                    // 2. Force update origin URL with authentication
-                    sh """
-                        git remote set-url origin ${AUTH_URL}
-                        git config --get remote.origin.url  # Verify
-                    """
+                    // 2. DEBUG: Verify credentials (remove after testing)
+                    sh 'echo "Token first 5 chars: ${GITHUB_TOKEN.substring(0,5)}..."'
                     
-                    // 3. Deploy with explicit authentication
+                    // 3. Deploy using DIRECT authenticated command
                     sh """
+                        # Force-clean any existing deployment
+                        git push --delete origin gh-pages || true
+                        
+                        # Deploy with explicit auth
                         npx gh-pages --dist build \
-                            --repo ${AUTH_URL} \
+                            --repo "${GIT_REPO_URL}" \
                             --user "Jenkins Deploy Bot <deploy@invoice-generator.ci>"
                     """
                 }
