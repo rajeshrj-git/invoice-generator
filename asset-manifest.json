@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/invoice-generator/static/css/main.7e191bd6.css",
+    "main.js": "/invoice-generator/static/js/main.6eb34870.js",
+    "static/js/82.f5e692e3.chunk.js": "/invoice-generator/static/js/82.f5e692e3.chunk.js",
+    "static/js/239.8882e2ef.chunk.js": "/invoice-generator/static/js/239.8882e2ef.chunk.js",
+    "static/js/206.c2a54471.chunk.js": "/invoice-generator/static/js/206.c2a54471.chunk.js",
+    "index.html": "/invoice-generator/index.html"
+  },
+  "entrypoints": [
+    "static/css/main.7e191bd6.css",
+    "static/js/main.6eb34870.js"
+  ]
+}
