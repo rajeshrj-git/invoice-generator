@@ -1,9 +1,12 @@
 pipeline{
     agent any
     stages{
-        stage("Checkout"){
+        stage("Checkout GitHub"){
             steps{
-                echo "Checouting"
+                git branch :'main',
+                credientialsId:'None',
+                url:'https://github.com/rajeshrj-git/invoice-generator'
+                sh'ls -lat'
             }
         }
         stage("Build"){
