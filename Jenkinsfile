@@ -3,10 +3,11 @@ pipeline{
     stages{
         stage("Checkout GitHub"){
             steps{
-                git branch :'main',
-                credentialsId:'None',
-                url:'https://github.com/rajeshrj-git/invoice-generator'
-                sh'ls -lat'
+                // git branch :'main',
+                // credentialsId:'None',
+                // url:'https://github.com/rajeshrj-git/invoice-generator'
+                // sh'ls -lat'
+                checkout scm
             }
         }
         stage("Build"){
