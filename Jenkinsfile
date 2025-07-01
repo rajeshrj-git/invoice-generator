@@ -8,11 +8,12 @@ pipeline{
                 // url:'https://github.com/rajeshrj-git/invoice-generator'
                 // sh'ls -lat'
                 checkout scm
+                echo "Checkout Done"
             }
         }
         stage("Build"){
             steps{
-                echo "Buiding Happening here"
+                echo "Buiding  here"
             }
         }
         stage('Test'){
@@ -23,7 +24,7 @@ pipeline{
         
         stage('Deploy'){
             steps{
-                echo "Deploying Happening Here"
+                echo "Deploying  Here"
             }
         }
     }
