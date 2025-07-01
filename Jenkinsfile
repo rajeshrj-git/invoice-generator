@@ -41,15 +41,13 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        # Configure git
                         git config --global user.email "deploy@invoice-generator.ci"
                         git config --global user.name "Jenkins Deploy Bot"
                         
-                        # Test permissions first
                         echo "Testing repository write access..."
                         git ls-remote --exit-code "${GIT_REPO_URL}" refs/heads/gh-pages || echo "gh-pages branch doesn't exist yet"
                         
-                        # Deploy with better error handling
+
                         echo "Deploying to GitHub Pages..."
                         npx gh-pages --dist build \
                             --repo "${GIT_REPO_URL}" \
@@ -63,15 +61,12 @@ pipeline {
     }
     post {
         success {
-            echo "🎉 Pipeline executed successfully!"
-            echo "🌐 Your app should be available at: https://rajeshrj-git.github.io/invoice-generator/"
+            echo "Pipeline executed successfully!"
+            echo "Your app should be available at: https://rajeshrj-git.github.io/invoice-generator/"
         }
         failure {
             echo "❌ Pipeline failed"
-            echo "💡 If you see permission errors, check your GitHub token permissions:"
-            echo "   - Go to GitHub → Settings → Developer settings → Personal access tokens"
-            echo "   - Make sure 'repo' and 'workflow' permissions are enabled"
-        }
+   
         always {
             sh 'rm -rf ~/.npm ~/.cache'  
         }
