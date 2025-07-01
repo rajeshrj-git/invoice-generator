@@ -4,7 +4,6 @@
   "private": true,
   "homepage": "https://rajeshrj-git.github.io/invoice-generator",
   "dependencies": {
-    "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "bootstrap": "^5.1.0",
@@ -45,6 +44,7 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
     "gh-pages": "^6.3.0"
   }
 }
