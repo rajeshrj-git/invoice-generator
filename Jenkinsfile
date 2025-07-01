@@ -1,31 +1,57 @@
 pipeline{
     agent any
+
+    environment{
+        NODE_ENV ='production'
+    }
+    options{
+        timestamps()
+    }
+
+
     stages{
-        stage("Checkout GitHub"){
+        stage("Checkout"){
             steps{
-                // git branch :'main',
-                // credentialsId:'None',
-                // url:'https://github.com/rajeshrj-git/invoice-generator'
-                // sh'ls -lat'
+
                 checkout scm
                 echo "Checkout Done"
             }
         }
+        stage("Installing dependicies"){
+            steps{
+                sh 'npm ci'
+                echo "Installination Successfull ✅"
+            }
+        }
         stage("Build"){
             steps{
-                echo "Buiding  here"
+                sh 'npm run  build'
+                echo "Buid Successfull ✅"
             }
         }
         stage('Test'){
             steps{
-                echo "Testing Stage Done"
+                sh 'npm test -- --watchAll=false'
+                echo "Testing Successfull ✅"
             }
         }
         
         stage('Deploy'){
             steps{
-                echo "Deploying  Here"
+                sh 'npm run deploy'
+                echo "Deployed Successfull✅"
             }
         }
     }
+
+    post {
+        success {
+            echo "🎉 Pipeline executed successfully!"
+        }
+        failure {
+            echo "❌ Pipeline failed — check logs above."
+        } 
+    }
+
 }
+
