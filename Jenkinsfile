@@ -54,21 +54,29 @@ pipeline {
 
         stage('Deploy') {
             environment {
-                // Use the credential directly in the URL
-                GIT_URL = "https://${GITHUB_TOKEN}@github.com/rajeshrj-git/invoice-generator.git"
+                // Use this exact format for token authentication
+                AUTH_URL = "https://x-access-token:${GITHUB_TOKEN}@github.com/rajeshrj-git/invoice-generator.git"
             }
             steps {
                 script {
-                    // Configure git auth
+                    // 1. Configure Git (critical for gh-pages commits)
                     sh '''
                         git config user.email "deploy@invoice-generator.ci"
                         git config user.name "Jenkins Deploy Bot"
-                        git remote set-url origin ${GIT_URL}
                     '''
                     
-                    // Deploy with forced authentication
-                    sh 'git push origin --delete gh-pages || true'  // Clean old deployment
-                    sh 'npx gh-pages --dist build --repo ${GIT_URL}'
+                    // 2. Force update origin URL with authentication
+                    sh """
+                        git remote set-url origin ${AUTH_URL}
+                        git config --get remote.origin.url  # Verify
+                    """
+                    
+                    // 3. Deploy with explicit authentication
+                    sh """
+                        npx gh-pages --dist build \
+                            --repo ${AUTH_URL} \
+                            --user "Jenkins Deploy Bot <deploy@invoice-generator.ci>"
+                    """
                 }
             }
         }
