@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         NODE_ENV = 'production'
+        GITHUB_TOKEN = credentials('GITHUB_TOKEN')  
+        REPO_URL = 'https://github.com/rajeshrj-git/invoice-generator.git'
     }
 
     options {
@@ -17,9 +19,9 @@ pipeline {
             }
         }
 
-        stage("Installing dependencies") {
+        stage("Install Dependencies") {
             steps {
-                sh 'npm ci --include=dev'  // Ensures devDependencies are installed
+                sh 'npm ci --include=dev'
                 echo "Installation Successful ✅"
             }
         }
@@ -27,7 +29,7 @@ pipeline {
         stage("Build") {
             steps {
                 echo "🔨 Building React app..."
-                sh 'npm run build'
+                sh 'GENERATE_SOURCEMAP=false npm run build' 
                 echo "Build Successful ✅"
             }
         }
@@ -39,10 +41,22 @@ pipeline {
             }
         }
 
+        stage('Configure Git') {
+            steps {
+                sh '''
+                    git config user.email "deploy@invoice-generator.ci"
+                    git config user.name "Invoice Generator Deploy Bot"
+                    git remote set-url origin ${REPO_URL}
+                '''
+                echo "Git Configured ✅"
+            }
+        }
+
         stage('Deploy') {
             steps {
                 sh 'npm run deploy'
                 echo "Deployed Successfully ✅"
+                echo "Your app is live at: https://rajeshrj-git.github.io/invoice-generator"
             }
         }
     }
@@ -53,6 +67,9 @@ pipeline {
         }
         failure {
             echo "❌ Pipeline failed — check logs above."
+        }
+        always {
+            sh 'rm -rf ~/.npm ~/.cache'  
         }
     }
 }
