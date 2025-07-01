@@ -34,51 +34,28 @@ pipeline {
                 echo "Testing Successful ✅"
             }
         }
-        stage('Configure Git') {
-            steps {
-                sh '''
-                    git config user.email "deploy@invoice-generator.ci"
-                    git config user.name "Invoice Generator Deploy Bot"
-                    git remote set-url origin ${REPO_URL}
-                '''
-                echo "Git Configured ✅"
-            }
-        }
-        stage('🚀 Deploy - Debug Mode') {
+        stage('🚀 Deploy') {
             environment {
                 GIT_REPO_URL = "https://${GITHUB_TOKEN}@github.com/rajeshrj-git/invoice-generator.git"
             }
             steps {
                 script {
-                    // Debug: Check everything before deploying
                     sh '''
-                        echo "=== DEBUGGING DEPLOY SETUP ==="
-                        echo "Node version: $(node --version)"
-                        echo "NPM version: $(npm --version)"
-                        echo "Git version: $(git --version)"
-                        echo "Token length: ${#GITHUB_TOKEN}"
-                        echo "Build directory exists: $(ls -la build/ | head -5)"
-                        
-                        # Check if gh-pages is available
-                        echo "Checking gh-pages availability..."
-                        npx gh-pages --version || echo "gh-pages not found, will install"
-                        
-                        # Test git authentication without pushing
-                        echo "Testing git access..."
-                        git ls-remote "${GIT_REPO_URL}" || echo "Git auth failed"
-                    '''
-                    
-                    // Only deploy if everything looks good
-                    sh '''
-                        echo "=== STARTING DEPLOYMENT ==="
+                        # Configure git
                         git config --global user.email "deploy@invoice-generator.ci"
                         git config --global user.name "Jenkins Deploy Bot"
                         
-                        # Deploy to GitHub Pages
+                        # Test permissions first
+                        echo "Testing repository write access..."
+                        git ls-remote --exit-code "${GIT_REPO_URL}" refs/heads/gh-pages || echo "gh-pages branch doesn't exist yet"
+                        
+                        # Deploy with better error handling
+                        echo "Deploying to GitHub Pages..."
                         npx gh-pages --dist build \
                             --repo "${GIT_REPO_URL}" \
                             --user "Jenkins Deploy Bot <deploy@invoice-generator.ci>" \
-                            --message "Deploy from Jenkins build ${BUILD_NUMBER}"
+                            --message "Deploy from Jenkins build ${BUILD_NUMBER}" \
+                            --dotfiles
                     '''
                 }
             }
@@ -87,16 +64,13 @@ pipeline {
     post {
         success {
             echo "🎉 Pipeline executed successfully!"
+            echo "🌐 Your app should be available at: https://rajeshrj-git.github.io/invoice-generator/"
         }
         failure {
-            echo "❌ Pipeline failed — check logs above."
-            sh '''
-                echo "=== FAILURE DEBUG INFO ==="
-                echo "Current directory: $(pwd)"
-                echo "Git status: $(git status)"
-                echo "Git remotes: $(git remote -v)"
-                ls -la build/ || echo "No build directory"
-            '''
+            echo "❌ Pipeline failed"
+            echo "💡 If you see permission errors, check your GitHub token permissions:"
+            echo "   - Go to GitHub → Settings → Developer settings → Personal access tokens"
+            echo "   - Make sure 'repo' and 'workflow' permissions are enabled"
         }
         always {
             sh 'rm -rf ~/.npm ~/.cache'  
