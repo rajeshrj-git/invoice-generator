@@ -2,7 +2,7 @@ pipeline{
     agent any
 
     environment{
-        NODE_ENV ='production',
+        NODE_ENV ='production'
         NODE_OPTIONS = '--openssl-legacy-provider'
     }
     options{
