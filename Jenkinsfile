@@ -8,7 +8,7 @@ pipeline{
         }
         stage('Build Docker image'){
             steps{
-                sh'docker build -t invoice-generator:2.1'
+                sh'docker build -t invoice-generator:2.1 .'
                 echo 'Buil image Done ✅'
             }
         }
