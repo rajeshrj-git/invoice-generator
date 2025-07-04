@@ -3,7 +3,7 @@ pipeline{
     stages{
         stage('Checkout'){
             steps{
-                git branch: 'main', credentialsId: 'd4987ab6-ff01-47d0-9a42-624c138d77e5', url: 'https://github.com/rajeshrj-git/invoice-generator'  
+                git branch: 'main', url: 'https://github.com/rajeshrj-git/invoice-generator'  
                 echo 'Github Checkout Done'            }
         }
         stage('Build Docker image'){
