@@ -4,11 +4,12 @@ pipeline{
         stage('Checkout'){
             steps{
                 git branch: 'main', url: 'https://github.com/rajeshrj-git/invoice-generator'  
-                echo 'Github Checkout Done'            }
+                echo 'Github Checkout Done✅'            }
         }
         stage('Build Docker image'){
             steps{
                 sh'docker build -t invoice-generator:2.1'
+                echo 'Buil image Done ✅'
             }
         }
         stage('Docker Hub pushing'){
@@ -17,6 +18,7 @@ pipeline{
                 sh'docker login -u ${docker_user} -p ${docker_pass}'
 }
                sh'docker push rajeshchoco13/invoice-generator:2.1'
+                echo 'Docker Hub Push Done ✅'
 
 
             }
@@ -25,6 +27,7 @@ pipeline{
             steps{
                 sh '''kubectl get pods
                 kubectl set image deplpoyment invoice-generator invoice-generator:rajeshchoco13/invoice-generator:2.1 '''
+                
 
             }
         }
