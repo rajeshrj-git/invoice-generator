@@ -8,7 +8,7 @@ pipeline{
         }
         stage('Build Docker image'){
             steps{
-                sh'docker build -t invoice-generator:2.1 .'
+                sh'docker build -t rajeshchoco13/invoice-generator:2.1  .'
                 echo 'Buil image Done ✅'
             }
         }
@@ -17,7 +17,7 @@ pipeline{
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'docker_pass', usernameVariable: 'docker_user')]) {
                 sh'docker login -u ${docker_user} -p ${docker_pass}'
 }
-               sh'docker push invoice-generator:2.1'
+               sh'docker push rajeshchoco13/invoice-generator:2.1 '
                 echo 'Docker Hub Push Done ✅'
 
 
