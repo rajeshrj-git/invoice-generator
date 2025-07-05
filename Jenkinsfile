@@ -26,7 +26,8 @@ pipeline{
         stage('K8 Deploy'){
             steps{
                 sh '''kubectl get pods -A
-                kubectl set image deployment invoice-generator invoice-generator:rajeshchoco13/invoice-generator:2.1 '''
+                kubectl set image deployment/invoice-generator invoice-generator=rajeshchoco13/invoice-generator:2.1
+                '''
                 echo "Deployment using Kubeis Done ✅"
                 
 
