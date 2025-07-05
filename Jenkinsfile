@@ -24,14 +24,21 @@ pipeline{
             }
         }
         stage('K8 Deploy'){
-            steps{
-                sh '''kubectl get pods -A
-                kubectl set image deployment/invoice-generator invoice-generator=rajeshchoco13/invoice-generator:2.1
-                '''
-                echo "Deployment using Kubeis Done ✅"
-                
-
-            }
+            steps {
+                    sh '''
+                        kubectl get pods -A
+                        
+                        # Create or update deployment
+                        kubectl create deployment invoice-generator --image=rajeshchoco13/invoice-generator:2.1 --dry-run=client -o yaml | kubectl apply -f -
+                        
+                        # Wait for rollout
+                        kubectl rollout status deployment/invoice-generator
+                        
+                        # Show pods
+                        kubectl get pods -l app=invoice-generator
+                    '''
+                    echo "Deployment using Kubernetes is Done ✅"
+                }
         }
     }
 }
